@@ -2,27 +2,57 @@ const User = require("../models/User.model");
 const ActivityLog = require("../models/ActivityLog.model");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../config/jwt");
-const { createOTP } = require("../services/otp.service");
+//const { createOTP } = require("../services/otp.service");
+const OTP = require("../models/OTP.model");
 const { sendOTP } = require("../services/mail.service");
 
 /* ================= REGISTER ================= */
+// exports.register = async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+//     const exists = await User.findOne({ email });
+//     if (exists) return res.status(400).json({ message: "User already exists" });
+
+//     const hash = await bcrypt.hash(password, 10);
+//     const user = await User.create({ name, email, password: hash, isVerified: false });
+
+//     const otp = await createOTP(email);
+//     await sendOTP(email, otp);
+
+//     await ActivityLog.create({
+//       userId: user._id,
+//       action: "Registered new account",
+//       ip: req.ip,
+//     });
+
+//     res.status(201).json({ message: "OTP sent to email" });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ message: "User already exists" });
 
-    const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hash, isVerified: false });
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
-    const otp = await createOTP(email);
-    await sendOTP(email, otp);
-
-    await ActivityLog.create({
-      userId: user._id,
-      action: "Registered new account",
-      ip: req.ip,
+    // Save OTP + temp user data
+    await OTP.create({
+      email,
+      otp,
+      expiresAt,
+      tempData: { name, password },
     });
+
+    // Send OTP via email
+    await sendOTP(email, otp);
 
     res.status(201).json({ message: "OTP sent to email" });
   } catch (err) {
