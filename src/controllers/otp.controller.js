@@ -51,14 +51,30 @@ const bcrypt = require("bcryptjs");
 
 exports.verifyOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    let { email, otp } = req.body;
+
+    email = req.body.email.trim().toLowerCase();
+    otp = String(otp).trim();
+
+    console.log("Incoming email:", email);
+    console.log("Incoming otp:", otp, typeof otp);
+
+    const dbOtp = await OTP.findOne({ email });
+    console.log("DB record:", dbOtp);
 
     const record = await OTP.findOne({ email, otp });
-    if (!record) return res.status(400).json({ message: "Invalid OTP" });
-    if (record.expiresAt.getTime() < Date.now()) return res.status(400).json({ message: "OTP expired" });
 
-    // Create user now
-    const hashedPassword = await bcrypt.hash(record.tempData.password, 10);
+    if (!record)
+      return res.status(400).json({ message: "Invalid OTP" });
+
+    if (record.expiresAt.getTime() < Date.now())
+      return res.status(400).json({ message: "OTP expired" });
+
+    const hashedPassword = await bcrypt.hash(
+      record.tempData.password,
+      10
+    );
+
     const user = await User.create({
       name: record.tempData.name,
       email,
@@ -66,10 +82,13 @@ exports.verifyOTP = async (req, res) => {
       isVerified: true,
     });
 
-    // Remove OTP record
     await OTP.deleteMany({ email });
 
-    res.json({ message: "Account verified successfully", userId: user._id });
+    res.json({
+      message: "Account verified successfully",
+      userId: user._id,
+    });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
