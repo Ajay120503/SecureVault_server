@@ -38,14 +38,15 @@ exports.importCSV = async (req, res) => {
       category: detectCategory(r.siteName),
     });
 
-     await ActivityLog.create({
-        userId: req.user.id,
-        action: `Imported password for site ${r.siteName} via CSV`,
-        ip: req.ip,
-      });
-
+    
     imported++;
   }
+  
+  await ActivityLog.create({
+     userId: req.user.id,
+     action: `Imported password for site ${r.siteName} via CSV`,
+     ip: req.ip,
+   });
 
   res.json({
     message: "Import completed",
@@ -87,14 +88,15 @@ exports.extensionImport = async (req, res) => {
         category: detectCategory(p.site),
       });
 
-      await ActivityLog.create({
-        userId: req.user.id,
-        action: `Imported password for site ${p.site} via Extension`,
-        ip: req.ip,
-      });
-
+      
       saved++;
     }
+
+    await ActivityLog.create({
+      userId: req.user.id,
+      action: `Imported password for site ${p.site} via Extension`,
+      ip: req.ip,
+    });
 
     res.json({
       message: "Extension import success",
