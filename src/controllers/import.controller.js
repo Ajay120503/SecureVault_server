@@ -41,10 +41,10 @@ exports.importCSV = async (req, res) => {
     
     imported++;
   }
-  
+
   await ActivityLog.create({
      userId: req.user.id,
-     action: `Imported password for site ${r.siteName} via CSV`,
+     action: `Imported password By CSV Import`,
      ip: req.ip,
    });
 
@@ -94,7 +94,7 @@ exports.extensionImport = async (req, res) => {
 
     await ActivityLog.create({
       userId: req.user.id,
-      action: `Imported password for site ${p.site} via Extension`,
+      action: `Imported password By Extension`,
       ip: req.ip,
     });
 
