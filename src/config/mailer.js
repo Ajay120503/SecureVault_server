@@ -33,3 +33,49 @@ const transporter = nodemailer.createTransport({
 });
 
 module.exports = transporter;
+
+// const nodemailer = require("nodemailer");
+// const { google } = require("googleapis");
+
+// const OAuth2 = google.auth.OAuth2;
+
+// const createTransporter = async () => {
+//   try {
+//     const oauth2Client = new OAuth2(
+//       process.env.GOOGLE_CLIENT_ID,
+//       process.env.GOOGLE_CLIENT_SECRET,
+//       "https://developers.google.com/oauthplayground"
+//     );
+
+//     oauth2Client.setCredentials({
+//       refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+//     });
+
+//     // Automatically generate fresh access token
+//     const accessToken = await oauth2Client.getAccessToken();
+
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         type: "OAuth2",
+//         user: process.env.EMAIL_USER,
+//         clientId: process.env.GOOGLE_CLIENT_ID,
+//         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//         refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+//         accessToken: accessToken.token,
+//       },
+
+//       // Cloud-safe settings
+//       connectionTimeout: 20000,
+//       greetingTimeout: 20000,
+//       socketTimeout: 30000,
+//     });
+
+//     return transporter;
+//   } catch (error) {
+//     console.error("Mailer creation error:", error);
+//     throw error;
+//   }
+// };
+
+// module.exports = createTransporter;
