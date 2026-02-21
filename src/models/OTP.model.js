@@ -1,4 +1,3 @@
-// models/OTP.model.js
 const mongoose = require("mongoose");
 
 const otpSchema = new mongoose.Schema({
