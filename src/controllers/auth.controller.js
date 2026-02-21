@@ -27,10 +27,11 @@ exports.register = async (req, res) => {
     });
 
     // Send OTP via email
-    // await sendOTP(email, otp);
-    sendOTP(email, otp).catch(err =>
-      console.error("Mail error:", err.message)
-    );
+    sendOTP(email, otp).catch(console.error);
+    //await sendOTP(email, otp);
+    // sendOTP(email, otp).catch(err =>
+    //   console.error("Mail error:", err.message)
+    // );
 
     res.status(201).json({ message: "OTP sent to email" });
   } catch (err) {
