@@ -10,6 +10,10 @@
 
 
 const nodemailer = require("nodemailer");
+const dns = require("dns");
+
+// FORCE IPv4 FIRST (fix Render Gmail issue)
+dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
