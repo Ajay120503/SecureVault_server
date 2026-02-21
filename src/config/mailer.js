@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false,
   },
-  connectionTimeout: 10000, // prevents 2-minute hanging
+  connectionTimeout: 200000, // prevents 2-minute hanging
 });
 
 module.exports = transporter;
